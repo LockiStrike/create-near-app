@@ -1,0 +1,134 @@
+<ng-container [ngSwitch]="signedIn">
+  <ng-container *ngSwitchCase="true" [ngTemplateOutlet]="signedInTemplate"></ng-container>
+  <ng-container *ngSwitchDefault [ngTemplateOutlet]="signedOutTemplate"></ng-container>
+</ng-container>
+
+<ng-template #signedInTemplate>
+  <button [ngStyle]="{ float: 'right' }" (click)="logout()">Sign out</button>
+  <main>
+    <h1>
+      Greetings {{ currentName }}
+    </h1>
+    <form (ngSubmit)="onSubmit($event)">
+      <fieldset id="fieldset">
+        <label for="greeting" [ngStyle]="{
+          display: 'block',
+          color: 'var(--gray)',
+          marginBottom: '0.5em'
+        }">Enter the name</label>
+        <div [ngStyle]="{ display: 'flex' }">
+          <input
+            [ngStyle]="{ flexGrow: 1 }"
+            type="text"
+            id="greeting"
+            name="greeting"
+            autoComplete="off"
+            [(ngModel)]="newName"
+            [defaultValue]="currentName"
+            required
+          />
+          <button [ngStyle]="{ borderRadius: '0 5px 5px 0' }" type="submit" [disabled]="formDisabled">Save</button>
+        </div>
+      </fieldset>
+    </form>
+  </main>
+
+  <main>
+    <form (ngSubmit)="fetchBalance($event)">
+      <fieldset id="forBalance">
+        <div [ngStyle]="{ display: 'flex' }">
+          <div [ngStyle]="{ flexGrow: 1 }" id="getBalance"> {{balance}} </div>
+          <button [ngStyle]="{ borderRadius: '0 5px 5px 0' }" type="submit" [disabled]="balanceDisabled">Get Balance
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </main>
+
+  <main>
+    <form [formGroup]='receiveForm' (ngSubmit)="send($event, 'receive')">
+      <fieldset id="forReceive">
+        <div [ngStyle]="{ display: 'flex', gap: '20px', 'flex-direction': 'column' }">
+          <div>
+            <label for="receiveValue" [ngStyle]="{
+          display: 'block',
+          color: 'var(--gray)',
+          marginBottom: '0.5em'
+        }">Enter the amount to receive</label>
+            <input
+              [ngStyle]="{ flexGrow: 1 }"
+              type="number"
+              id="receiveValue"
+              formControlName="amount"
+              autoComplete="off"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="receiveNote"
+                   [ngStyle]="{ display: 'block', color: 'var(--gray)', marginBottom: '0.5em'}">
+              Note for the transaction
+            </label>
+            <textarea [ngStyle]="{ flexGrow: 1 }" id="receiveNote" formControlName="note"></textarea>
+          </div>
+          <button [ngStyle]="{ borderRadius: '0 5px 5px 0' }" type="submit"
+                  [disabled]="receiveForm.invalid || receiveForm.controls.amount.pristine">Send
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </main>
+
+  <main>
+    <form [formGroup]='spentForm' (ngSubmit)="send($event, 'spent')">
+      <fieldset id="forSpent">
+        <div [ngStyle]="{ display: 'flex', gap: '20px', 'flex-direction': 'column' }">
+          <div>
+            <label for="spentValue" [ngStyle]="{
+          display: 'block',
+          color: 'var(--gray)',
+          marginBottom: '0.5em'
+        }">Enter the amount to spent</label>
+            <input
+              [ngStyle]="{ flexGrow: 1 }"
+              type="number"
+              id="spentValue"
+              formControlName="amount"
+              autoComplete="off"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="receiveNote"
+                   [ngStyle]="{ display: 'block', color: 'var(--gray)', marginBottom: '0.5em'}">
+              Note for the transaction
+            </label>
+            <textarea [ngStyle]="{ flexGrow: 1 }" id="spentNote" formControlName="note"></textarea>
+          </div>
+          <button [ngStyle]="{ borderRadius: '0 5px 5px 0' }" type="submit"
+                  [disabled]="spentFormInvalid(spentForm)">Send
+          </button>
+        </div>
+      </fieldset>
+    </form>
+  </main>
+  <app-notification [accountId]="accountId" [contractId]="contractId" *ngIf="showNotification"></app-notification>
+</ng-template>
+
+<ng-template #signedOutTemplate>
+  <main>
+    <h1>Welcome to NEAR!</h1>
+    <p>
+      To make use of the NEAR blockchain, you need to sign in. The button
+      below will sign you in using testnet NEAR Wallet.
+    </p>
+    <p>
+      Go ahead and click the button below to try it out:
+    </p>
+    <p [ngStyle]="{ textAlign: 'center', marginTop: '2.5em' }">
+      <button type="button" (click)="login()">Sign in</button>
+    </p>
+  </main>
+</ng-template>

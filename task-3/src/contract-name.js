@@ -1,0 +1,1 @@
+module.exports = 'nearvember3-lockistrike.testnet'
